@@ -41,7 +41,7 @@ func SendVerificationEmail() bool {
 	encEmail := base64.URLEncoding.EncodeToString([]byte(G.User.Email))
 	templateData.EncEmail = encEmail
 	templateData.User = G.User
-	htmlString, err := H.ParseTemplate("View/Email/email-verify.html", templateData)
+	htmlString, err := H.ParseTemplate("Views/Email/email-verify.html", templateData)
 	if err != nil {
 		log.Println("AuthService.go Log1", err.Error())
 		return false
@@ -64,7 +64,7 @@ func SendPasswordResetLinkEmail() bool {
 	templateData.EncEmail = encEmail
 	templateData.User = G.User
 	templateData.PS = G.PS
-	htmlString, err := H.ParseTemplate("View/Email/reset-password-email.html", templateData)
+	htmlString, err := H.ParseTemplate("Views/Email/reset-password-email.html", templateData)
 	if err != nil {
 		log.Println("AuthService.go Log2", err.Error())
 		return false
