@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CRUD | Registration</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    {{if (ne .Success "")}}
+        <br><br><span class="alert alert-success">{{ .Success }}</span><br><br>
+    {{else if (ne .Fail "")}}
+        <br><br><span class="alert alert-danger">{{ .Fail }}</span><br><br>
+    {{end}}
+    <h2>Registration</h2>
+    <form action="/register" method="post">
+        <div class="form-group">
+            <label for="full_name">Full Name:</label>
+            <input type="text" class="form-control" id="full_name" placeholder="Enter Full Name" name="full_name">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password">
+        </div>
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirm-password" placeholder="Enter Password Again" name="confirm-password">
+        </div>
+        <button type="submit" class="btn btn-info">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CRUD | Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    {{if (ne .Success "")}}
+        <br><br><span class="alert alert-success">{{ .Success }}</span><br><br>
+    {{else if (ne .Fail "")}}
+        <br><br><span class="alert alert-danger">{{ .Fail }}</span><br><br>
+    {{end}}
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password">
+        </div>
+        <div class="form-group">
+            <input type="checkbox" name="remember_me" value="1">&nbsp&nbsp<b>Remember Me</b>
+        </div>
+        <div class="form-group">
+            <a href="/forgot-password">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn btn-info">Login</button>
+    </form>
+</div>
+
+</body>
+</html>
