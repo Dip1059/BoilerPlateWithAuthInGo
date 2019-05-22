@@ -33,3 +33,13 @@ func ParseTemplate(fileName string, templateData interface{}) (string, error) {
 	str = buffer.String()
 	return str, nil
 }
+
+
+func NullStringProcess(data sql.NullString) sql.NullString{
+	if data.String != "" {
+		data.Valid = true
+	} else {
+		data.Valid = false
+	}
+	return data
+}

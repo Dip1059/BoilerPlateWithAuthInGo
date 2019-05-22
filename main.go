@@ -1,6 +1,7 @@
 package main
 
 import (
+	Cfg "BoilerPlateWithAuthInGo/Config"
 	Mig "BoilerPlateWithAuthInGo/Database/Migrations"
 	Seed "BoilerPlateWithAuthInGo/Database/Seeders"
 	"BoilerPlateWithAuthInGo/Routes"
@@ -8,6 +9,7 @@ import (
 )
 
 func main() {
+	Cfg.AppConfig()
 	Mig.Migrate()
 	Seed.Seed()
 	Routes.Routes()

@@ -66,7 +66,7 @@ func Register(user M.User) (M.User, bool) {
 	var err error
 	var success bool
 
-	_, err = db.Query("INSERT INTO users(full_name, email, password, role_id, email_verification) VALUES(?, ?, ?, ?, ?);", user.FullName, user.Email, user.Password, user.RoleID, user.EmailVerification)
+	_, err = db.Query("INSERT INTO users(created_at, updated_at, full_name, email, password, role_id, email_verification) VALUES(now(),now(),?, ?, ?, ?, ?);", user.FullName, user.Email, user.Password, user.RoleID, user.EmailVerification)
 	if err != nil {
 		log.Println("AuthRepo.go Log2", err.Error())
 		return user, false
@@ -98,7 +98,7 @@ func Login(user M.User) (M.User, bool) {
 func SetRememberToken(user M.User) bool {
 	db, _ := DBConnect()
 
-	results, err := db.Query("UPDATE users set remember_token=? where email=?;", user.RememberToken, user.Email)
+	results, err := db.Query("UPDATE users set remember_token=?, updated_at=now() where email=?;", user.RememberToken, user.Email)
 	if err != nil {
 		log.Println("AuthRepo.go Log4", err.Error())
 		return false
@@ -117,7 +117,7 @@ func ActivateAccount(user M.User) (M.User, bool) {
 	results, err := db.Query("SELECT * FROM users WHERE email=? and email_verification=?;", user.Email, user.EmailVerification.String)
 
 	if results.Next() {
-		results, err = db.Query("UPDATE users SET active_status=1, email_verification=NULL WHERE email=? and email_verification=?;", user.Email, user.EmailVerification.String)
+		results, err = db.Query("UPDATE users SET active_status=1, email_verification=NULL, updated_at=now() WHERE email=? and email_verification=?;", user.Email, user.EmailVerification.String)
 
 		if err != nil {
 			log.Println("AuthRepo.go Log5", err.Error())
@@ -143,7 +143,7 @@ func ActivateAccount(user M.User) (M.User, bool) {
 func SendPasswordResetLink(ps M.PasswordReset) bool {
 	db, _ := DBConnect()
 
-		results, err := db.Query("INSERT INTO password_resets(email,token) VALUES(?, ?);", ps.Email, ps.Token)
+		results, err := db.Query("INSERT INTO password_resets(created_at, updated_at, email,token) VALUES(now(), now(), ?, ?);", ps.Email, ps.Token)
 		if err != nil {
 			log.Println("AuthRepo.go Log6", err.Error())
 			return false
@@ -175,20 +175,19 @@ func ResetPasswordGet(ps M.PasswordReset) bool {
 
 func ResetPasswordPost(user M.User, ps M.PasswordReset) bool {
 	db, _ := DBConnect()
-
-	results, err := db.Query("UPDATE users SET password=? where email=?;", user.Password, user.Email)
+	results, err := db.Query("UPDATE users SET password=?, updated_at=now() where email=?;", user.Password, user.Email)
 	if err != nil {
 		log.Println("AuthRepo.go Log8", err.Error())
 		return false
 	}
 
-	results, err = db.Query("UPDATE password_resets SET status=1 where email=? and token=?;", ps.Email, ps.Token)
+	results, err = db.Query("UPDATE password_resets SET status=1, updated_at=now() where email=? and token=?;", ps.Email, ps.Token)
 	if err != nil {
 		log.Println("AuthRepo.go Log9", err.Error())
 		return false
 	}
 
-	results, err = db.Query("UPDATE password_resets SET token=NULL where email=?;", ps.Email)
+	results, err = db.Query("UPDATE password_resets SET token=NULL, updated_at=now() where email=?;", ps.Email)
 	if err != nil {
 		log.Println("AuthRepo.go Log10", err.Error())
 		return false
@@ -203,7 +202,7 @@ func ResetPasswordPost(user M.User, ps M.PasswordReset) bool {
 func Logout(user M.User) {
 	db, _ := DBConnect()
 
-	results, err := db.Query("UPDATE users set remember_token=NULL where email=?;", user.Email)
+	results, err := db.Query("UPDATE users set remember_token=NULL, updated_at=now() where email=?;", user.Email)
 	if err != nil {
 		log.Println("AuthRepo.go Log11", err.Error())
 		return

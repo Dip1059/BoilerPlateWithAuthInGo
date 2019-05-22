@@ -2,12 +2,17 @@ package Globals
 
 import (
 	Mod "BoilerPlateWithAuthInGo/Models"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	"html/template"
 )
 
 type DB_ENV struct {
 	Host, Port, Dialect, Username, Password, DBname string
+}
+
+type App_env struct {
+	Name, Url string
 }
 
 
@@ -33,6 +38,8 @@ var(
 	User Mod.User
 	PS Mod.PasswordReset
 	Msg Message
+	AppEnv App_env
+	Store = sessions.NewCookieStore([]byte("secret"))
 )
 
 

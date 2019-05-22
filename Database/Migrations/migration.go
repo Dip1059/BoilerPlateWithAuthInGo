@@ -17,8 +17,8 @@ func Migrate() {
 }
 
 func AddForeignKeys() {
-	G.DB.Model(&Mod.User{}).AddForeignKey("role_id", "roles(id)", "CASCADE", "CASCADE")
-	G.DB.Model(&Mod.PasswordReset{}).AddForeignKey("email", "users(email)", "CASCADE", "CASCADE")
+	G.DB.Model(&Mod.User{}).AddForeignKey("role_id", "roles(id)", "RESTRICT", "RESTRICT")
+	G.DB.Model(&Mod.PasswordReset{}).AddForeignKey("email", "users(email)", "RESTRICT", "RESTRICT")
 }
 
 
