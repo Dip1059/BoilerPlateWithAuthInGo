@@ -3,6 +3,7 @@ package Helpers
 import (
 	"bytes"
 	"html/template"
+	"database/sql"
 	mrand "math/rand"
 	"time"
 )
