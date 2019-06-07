@@ -1,14 +1,13 @@
 package Services
 
 import (
-	"github.com/joho/godotenv"
+	G "BoilerPlateWithAuthInGo/Globals"
 	"gopkg.in/gomail.v2"
 	"log"
-	"os"
 	"strconv"
 )
 
-type Email_Env struct {
+/*type Email_Env struct {
 	Host, Port, Username, Password string
 }
 
@@ -25,7 +24,7 @@ func init() {
 		Username: os.Getenv("MAIL_USERNAME"),
 		Password: os.Getenv("MAIL_PASSWORD"),
 	}
-}
+}*/
 
 
 func SendEmail(from, to, subject, htmlString string) bool {
@@ -35,9 +34,9 @@ func SendEmail(from, to, subject, htmlString string) bool {
 	mail.SetHeader("Subject", subject)
 	mail.SetBody("text/html", htmlString)
 
-	port,_ := strconv.Atoi(emailEnv.Port)
+	port,_ := strconv.Atoi(G.EmailEnv.Port)
 
-	dialer := gomail.NewDialer(emailEnv.Host, port, emailEnv.Username, emailEnv.Password)
+	dialer := gomail.NewDialer(G.EmailEnv.Host, port, G.EmailEnv.Username, G.EmailEnv.Password)
 	if err := dialer.DialAndSend(mail); err != nil {
 		log.Println("EmailService.go Log1", err.Error())
 		return false

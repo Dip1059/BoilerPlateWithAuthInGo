@@ -1,7 +1,7 @@
 package Seeders
 
 import (
-	G "BoilerPlateWithAuthInGo/Globals"
+	Cfg "BoilerPlateWithAuthInGo/Config"
 	Mod "BoilerPlateWithAuthInGo/Models"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -10,8 +10,9 @@ var users []Mod.User
 
 func UserSeeder() {
 	user1()
+	db := Cfg.DBConnect()
 	for i, _ := range users {
-		G.DB.Where(&Mod.User{Email:users[i].Email}).FirstOrCreate(&users[i])
+		db.Where(&Mod.User{Email:users[i].Email}).FirstOrCreate(&users[i])
 	}
 
 }

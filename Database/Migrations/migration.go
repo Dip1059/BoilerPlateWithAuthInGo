@@ -2,23 +2,23 @@ package Migrtaions
 
 import (
 	Cfg "BoilerPlateWithAuthInGo/Config"
-	G "BoilerPlateWithAuthInGo/Globals"
 	Mod "BoilerPlateWithAuthInGo/Models"
+	"github.com/jinzhu/gorm"
 )
 
 
 func Migrate() {
-	Cfg.DBConnect()
-	G.DB.AutoMigrate(&Mod.Role{})
-	G.DB.AutoMigrate(&Mod.User{})
-	G.DB.AutoMigrate(&Mod.PasswordReset{})
-	AddForeignKeys()
-	defer G.DB.Close()
+	db := Cfg.DBConnect()
+	db.AutoMigrate(&Mod.Role{})
+	db.AutoMigrate(&Mod.User{})
+	db.AutoMigrate(&Mod.PasswordReset{})
+	AddForeignKeys(db)
+	defer db.Close()
 }
 
-func AddForeignKeys() {
-	G.DB.Model(&Mod.User{}).AddForeignKey("role_id", "roles(id)", "RESTRICT", "RESTRICT")
-	G.DB.Model(&Mod.PasswordReset{}).AddForeignKey("email", "users(email)", "RESTRICT", "RESTRICT")
+func AddForeignKeys(db *gorm.DB) {
+	db.Model(&Mod.User{}).AddForeignKey("role_id", "roles(id)", "RESTRICT", "RESTRICT")
+	db.Model(&Mod.PasswordReset{}).AddForeignKey("email", "users(email)", "RESTRICT", "RESTRICT")
 }
 
 

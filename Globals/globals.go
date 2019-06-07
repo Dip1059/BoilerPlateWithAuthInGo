@@ -3,7 +3,6 @@ package Globals
 import (
 	Mod "BoilerPlateWithAuthInGo/Models"
 	"github.com/gorilla/sessions"
-	"github.com/jinzhu/gorm"
 	"html/template"
 )
 
@@ -11,10 +10,13 @@ type DB_ENV struct {
 	Host, Port, Dialect, Username, Password, DBname string
 }
 
-type App_env struct {
+type App_Env struct {
 	Name, Url string
 }
 
+type Email_Env struct {
+	Host, Port, Username, Password string
+}
 
 type Message struct {
 	Success template.HTML
@@ -33,12 +35,9 @@ type UserDataForEmail struct {
 
 var(
 	DBEnv DB_ENV
-	DB *gorm.DB
-	Role Mod.Role
-	User Mod.User
-	PS Mod.PasswordReset
 	Msg Message
-	AppEnv App_env
+	AppEnv App_Env
+	EmailEnv Email_Env
 	Store = sessions.NewCookieStore([]byte("secret"))
 )
 

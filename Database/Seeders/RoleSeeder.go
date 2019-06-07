@@ -1,7 +1,7 @@
 package Seeders
 
 import (
-	G "BoilerPlateWithAuthInGo/Globals"
+	Cfg "BoilerPlateWithAuthInGo/Config"
 	Mod "BoilerPlateWithAuthInGo/Models"
 )
 
@@ -10,8 +10,9 @@ var roles =make([]Mod.Role,0)
 func RoleSeeder() {
 	role1()
 	role2()
+	db := Cfg.DBConnect()
 	for i,_ := range roles {
-		G.DB.FirstOrCreate(&roles[i],&Mod.Role{Name:roles[i].Name})
+		db.FirstOrCreate(&roles[i],&Mod.Role{Name:roles[i].Name})
 	}
 }
 

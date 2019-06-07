@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	Cfg.AppConfig()
+	Cfg.Config()
 	Mig.Migrate()
 	Seed.Seed()
 	Routes.Routes()

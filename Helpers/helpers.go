@@ -2,9 +2,13 @@ package Helpers
 
 import (
 	"bytes"
-	"html/template"
 	"database/sql"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
+	"html/template"
 	mrand "math/rand"
+	"net/http"
 	"time"
 )
 
@@ -43,4 +47,40 @@ func NullStringProcess(data sql.NullString) sql.NullString{
 		data.Valid = false
 	}
 	return data
+}
+
+func SetCookie(hashKey interface{}, blockKey interface{}, value string, name string, age int, c *gin.Context) {
+	var sc *securecookie.SecureCookie
+	if blockKey != nil {
+		sc = securecookie.New([]byte(hashKey.(string)), []byte(blockKey.(string)))
+	} else {
+		sc = securecookie.New([]byte(hashKey.(string)), nil)
+	}
+	encoded, err := sc.Encode(name, value)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	cookie := http.Cookie{
+		Name:     name,
+		Value:    encoded,
+		MaxAge:   age,
+	}
+	http.SetCookie(c.Writer, &cookie)
+}
+
+func GetCookie(hashKey interface{}, blockKey interface{}, name string, c *gin.Context) string{
+	var sc *securecookie.SecureCookie
+	if blockKey != nil {
+		sc = securecookie.New([]byte(hashKey.(string)), []byte(blockKey.(string)))
+	} else {
+		sc = securecookie.New([]byte(hashKey.(string)), nil)
+	}
+	if cookie, err := c.Request.Cookie(name); err == nil {
+		var value string
+		if err = sc.Decode(name, cookie.Value, &value); err == nil {
+			return value
+		}
+	}
+	return ""
 }
