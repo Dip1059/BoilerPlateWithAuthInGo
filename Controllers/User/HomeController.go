@@ -9,7 +9,7 @@ import (
 
 func Home(c *gin.Context) {
 
-	if user, success := M.IsAuthUser(c, G.Store); success {
+	if user, success := M.IsAuthUser(c, G.FStore); success {
 		c.HTML(http.StatusOK, "home.html", user)
 	}
 	return

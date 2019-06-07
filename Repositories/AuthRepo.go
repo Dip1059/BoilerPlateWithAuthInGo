@@ -41,20 +41,6 @@ func Login(user M.User) (M.User, bool) {
 }
 
 
-func SetRememberToken(user M.User) bool {
-	db := Cfg.DBConnect()
-
-	if db.Model(&user).Where("email=?", user.Email).Updates(
-		map[string]interface{}{"remember_token":user.RememberToken.String}).RowsAffected == 0 {
-		defer db.Close()
-		return false
-	}
-
-	defer db.Close()
-	return true
-}
-
-
 func ActivateAccount(user M.User) (M.User, bool) {
 	db := Cfg.DBConnect()
 	user.EmailVerification.Valid = false
@@ -138,12 +124,3 @@ func ResetPasswordPost(user M.User, ps M.PasswordReset) bool {
 	return true
 }
 
-
-func Logout(user M.User) {
-	db := Cfg.DBConnect()
-	user.RememberToken.Valid = false
-	db.Model(&user).Where("email=?", user.Email).Update(
-		"remember_token", user.RememberToken)
-	defer db.Close()
-
-}

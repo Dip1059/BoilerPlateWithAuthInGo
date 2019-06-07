@@ -39,6 +39,7 @@ var(
 	AppEnv App_Env
 	EmailEnv Email_Env
 	Store = sessions.NewCookieStore([]byte("secret"))
+	FStore = sessions.NewFilesystemStore("./Storage/Session",[]byte("secret"))
 )
 
 

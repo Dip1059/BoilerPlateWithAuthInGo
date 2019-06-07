@@ -18,7 +18,7 @@ import (
 
 func Welcome(c *gin.Context) {
 
-	if _, success := M.IsGuest(c, G.Store); success {
+	if _, success := M.IsGuest(c, G.FStore); success {
 		msg := Cfg.GetMessage(c)
 		c.HTML(http.StatusOK, "welcome.html", msg)
 
@@ -28,7 +28,7 @@ func Welcome(c *gin.Context) {
 
 func RegisterGet(c *gin.Context) {
 
-	if _, success := M.IsGuest(c, G.Store); success {
+	if _, success := M.IsGuest(c, G.FStore); success {
 		msg := Cfg.GetMessage(c)
 		c.HTML(http.StatusOK, "register.html", msg)
 
@@ -116,7 +116,6 @@ func ActivateAccount(c *gin.Context) {
 
 	user, success = R.ActivateAccount(user)
 	if success {
-		H.SetCookie("secret", nil, "", "email", -1, c)
 		Cfg.CreateMessage("success", "Congratulations, Your Account Is Activated.", c)
 		c.Redirect(http.StatusFound, "/login")
 	} else {
@@ -126,7 +125,7 @@ func ActivateAccount(c *gin.Context) {
 
 func LoginGet(c *gin.Context) {
 
-	if _, success := M.IsGuest(c, G.Store); success {
+	if _, success := M.IsGuest(c, G.FStore); success {
 		msg := Cfg.GetMessage(c)
 		c.HTML(http.StatusOK, "login.html", msg)
 
@@ -151,18 +150,8 @@ func LoginPost(c *gin.Context) {
 			if user.ActiveStatus == 1 {
 				H.SetCookie("secret", nil, "", "email", -1, c)
 
-				user.RememberToken.String = H.RandomString(60)
-				user.RememberToken.Valid = true
-
-				if !R.SetRememberToken(user) {
-					Cfg.CreateMessage("fail", "Some Internal Server Error Occurred. Please Try Again.", c)
-					c.Redirect(http.StatusFound, "/login")
-					return
-				}
-
-				session, _ := G.Store.Get(c.Request, "login_token")
+				session, _ := G.FStore.Get(c.Request, "login_token")
 				session.Values["userEmail"] = user.Email
-				session.Values["remember_token"] = user.RememberToken.String
 				session.Options.MaxAge = 60 * 60 * 24 * 5
 				session.Save(c.Request, c.Writer)
 
@@ -200,7 +189,7 @@ func LoginPost(c *gin.Context) {
 
 func ForgotPassword(c *gin.Context) {
 
-	if _, success := M.IsGuest(c, G.Store); success {
+	if _, success := M.IsGuest(c, G.FStore); success {
 		msg := Cfg.GetMessage(c)
 		c.HTML(http.StatusOK, "forgot-password.html", msg)
 
@@ -246,7 +235,7 @@ func SendPasswordResetLink(c *gin.Context) {
 }
 
 func ResetPasswordGet(c *gin.Context) {
-	if _, success := M.IsGuest(c, G.Store); !success {
+	if _, success := M.IsGuest(c, G.FStore); !success {
 		return
 	}
 	encEmail := c.Param("email")
@@ -300,13 +289,8 @@ func ResetPasswordPost(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	var user Mod.User
-
-	session, _ := G.Store.Get(c.Request, "login_token")
-	user.Email = session.Values["userEmail"].(string)
+	session, _ := G.FStore.Get(c.Request, "login_token")
 	session.Options.MaxAge = -1
 	session.Save(c.Request, c.Writer)
-
-	R.Logout(user)
 	c.Redirect(http.StatusFound, "/login")
 }

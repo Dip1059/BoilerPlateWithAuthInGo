@@ -15,7 +15,6 @@ type User struct {
 	ActiveStatus      int    `gorm:"type:tinyint(4); not null"`
 	RoleID            uint   `gorm:"index; not null"`
 	EmailVerification sql.NullString
-	RememberToken     sql.NullString
 	Role              Role	`gorm:"save_associations:false; association_save_reference:false"`
 }
 

@@ -10,20 +10,16 @@ import (
 )
 
 
-func IsGuest(c *gin.Context, store *sessions.CookieStore) (Mod.User, bool) {
+func IsGuest(c *gin.Context, store *sessions.FilesystemStore) (Mod.User, bool) {
 	var user Mod.User
 	session, _ := store.Get(c.Request, "login_token")
 	email := session.Values["userEmail"]
-	rememberToken := session.Values["remember_token"]
+	
 	var success bool
-	if email != nil && rememberToken != nil {
+	if email != nil {
 		user.Email = session.Values["userEmail"].(string)
 		user, success = R.ReadWithEmail(user)
 		if !success {
-			c.Redirect(http.StatusFound, "/logout")
-			return user, false
-		}
-		if rememberToken.(string) != user.RememberToken.String {
 			c.Redirect(http.StatusFound, "/logout")
 			return user, false
 		}
@@ -40,22 +36,17 @@ func IsGuest(c *gin.Context, store *sessions.CookieStore) (Mod.User, bool) {
 }
 
 
-func IsAuthUser(c *gin.Context, store *sessions.CookieStore) (Mod.User, bool) {
+func IsAuthUser(c *gin.Context, store *sessions.FilesystemStore) (Mod.User, bool) {
 	var user Mod.User
 	session, _ := store.Get(c.Request, "login_token")
 	email := session.Values["userEmail"]
-	rememberToken := session.Values["remember_token"]
+	
 	var success bool
-	if email != nil && rememberToken != nil {
+	if email != nil {
 		user.Email = session.Values["userEmail"].(string)
 		user, success = R.ReadWithEmail(user)
 		if !success {
 			G.Msg.Fail = "User Doesn't Exist Anymore."
-			c.Redirect(http.StatusFound, "/logout")
-			return user, false
-		}
-		if rememberToken.(string) != user.RememberToken.String {
-			//G.Msg.Fail = "Someone Stole Your Cookie From Your Browser. Please Be Cautious."
 			c.Redirect(http.StatusFound, "/logout")
 			return user, false
 		}
@@ -74,23 +65,18 @@ func IsAuthUser(c *gin.Context, store *sessions.CookieStore) (Mod.User, bool) {
 }
 
 
-func IsAuthAdminUser(c *gin.Context, store *sessions.CookieStore) (Mod.User, bool) {
+func IsAuthAdminUser(c *gin.Context, store *sessions.FilesystemStore) (Mod.User, bool) {
 	var user Mod.User
 	session, _ := store.Get(c.Request, "login_token")
 	email := session.Values["userEmail"]
-	rememberToken := session.Values["remember_token"]
+	
 	var success bool
 
-	if email != nil && rememberToken != nil {
+	if email != nil {
 		user.Email = session.Values["userEmail"].(string)
 		user, success = R.ReadWithEmail(user)
 		if !success {
 			G.Msg.Fail = "User Doesn't Exist Anymore."
-			c.Redirect(http.StatusFound, "/logout")
-			return user, false
-		}
-		if rememberToken.(string) != user.RememberToken.String {
-			//G.Msg.Fail = "Someone Stole Your Cookie From Your Browser. Please Be Cautious."
 			c.Redirect(http.StatusFound, "/logout")
 			return user, false
 		}

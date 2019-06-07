@@ -9,7 +9,7 @@ import (
 
 func Dashboard(c *gin.Context) {
 
-	if user, success := M.IsAuthAdminUser(c, G.Store); success {
+	if user, success := M.IsAuthAdminUser(c, G.FStore); success {
 		c.HTML(http.StatusOK, "dashboard.html", user)
 	}
 	return
